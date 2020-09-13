@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>CSCI5308 - Group Formation Tool</title>
+
+<script>
+	function showChoices() {
+		var type = document.getElementById("questionType").value;
+		if (type == "Multiple choice choose one"
+				|| type == "Multiple choice choose multiple") {
+			var choice = document.getElementById("choices");
+			var submitQuestion = document.getElementById("submitQuestion");
+			var moreChoice = document.getElementById('moreChoices');
+			var clickbutton = document.getElementById("clickbutton");
+			choice.style.display = "block";
+			moreChoice.style.display = "block";
+			submitQuestion.style.display = "block";
+			clickbutton.style.display = "none";
+		} else {
+			var next = document.getElementById("next");
+			next.type = "submit";
+		}
+
+	}
+	function moreChoices() {
+		var newtextbox = '<div><label> Displayed as :<input type ="text" name ="optionText"/></label><label>Stored as: <input type ="text" name ="storedAs"/></label></div>';
+		document.getElementById('choices').innerHTML += newtextbox;
+	}
+</script>
+
+</head>
+
+<body>
+	<div sec:authorize="isAuthenticated()">
+		<h4 th:inline="text">BannerID:
+			[[${#httpServletRequest.remoteUser}]]</h4>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" />
+		</form>
+		<div>
+			<h2>Basic Question Information</h2>
+			<div th:if="${errorMessage}">
+				<h4>Failures</h4>
+				<br />
+				<table>
+					<!--/*@thymesVar id="errorMessage" type="errorMessage"*/-->
+					<tr th:each="msg : ${errorMessage}">
+						<td><span th:text="${msg}"></span></td>
+					</tr>
+				</table>
+				<br />
+			</div>
+			<form th:action="@{/questionmanager/submitquestion(id=${course.id})}"
+				method="post">
+				<div>
+					<label> Title : <input type="text" name="title" />
+					</label>
+				</div>
+				<div>
+					<label> Question: <input type="text" name="question" />
+					</label>
+				</div>
+				<div>
+					<label> Type: <select id="questionType" name="questionType">
+							<option value="Numeric">Numeric</option>
+							<option value="Multiple choice choose one">Multiple
+								Choice- Choose One</option>
+							<option value="Multiple choice choose multiple">Multiple
+								Choice- Choose Multiple</option>
+							<option value="Free Text">Free Text</option>
+					</select>
+					</label>
+				</div>
+				<div id="clickbutton">
+					<button id="next" type="button" onclick="showChoices()">Next</button>
+				</div>
+				<p>
+				<div id="choices" style="display: none">
+					<div>
+						<label> Displayed as :<input type="text" name="optionText" /></label>
+						<label> Stored as: <input type="number" name="storedAs" /></label>
+					</div>
+					<div>
+						<label> Displayed as :<input type="text" name="optionText" /></label>
+						<label>Stored as: <input type="number" name="storedAs" /></label>
+					</div>
+					<div>
+						<label> Displayed as :<input type="text" name="optionText" /></label>
+						<label>Stored as: <input type="number" name="storedAs" /></label>
+					</div>
+					<div>
+						<label> Displayed as :<input type="text" name="optionText" /></label>
+						<label>Stored as: <input type="number" name="storedAs" /></label>
+					</div>
+				</div>
+				<div id="moreChoices" style="display: none">
+					<button type="button" onclick="moreChoices()">More answers
+					</button>
+				</div>
+				<div id="submitQuestion" style="display: none">
+					<button>Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div sec:authorize="!isAuthenticated()">
+		<p>This site requires you to be logged in.</p>
+		<a th:href="@{/login}">Click here to log in!</a>
+	</div>
+</body>
+</html>

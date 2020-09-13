@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>CSCI5308 - Group Formation Tool</title>
+</head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('#questionTable').DataTable();
+		$('.dataTables_length').addClass('bs-select');
+	});
+</script>
+<body>
+	<div sec:authorize="isAuthenticated()">
+		<h4 th:inline="text">BannerID:
+			[[${#httpServletRequest.remoteUser}]]</h4>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" />
+		</form>
+	</div>
+	<h1>Show Questions Page</h1>
+	<div>
+		<table id="questionTable"
+			class="table table-striped table-bordered table-sm" cellspacing="0"
+			width="100%">
+			<thead>
+				<tr>
+					<th class="th-sm">Title</th>
+					<th class="th-sm">Text</th>
+					<th class="th-sm">CreatedOn</th>
+					<th class="th-sm">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="Questions : ${questions}">
+					<td><label th:text="${Questions.title}"></label></td>
+					<td><label th:text="${Questions.text}"></label></td>
+					<td><label th:text="${Questions.createdOn}"></label></td>
+					<td><a
+						onclick="return confirm('Are you sure you want to delete this item?');"
+						th:href="@{/questionmanager/deletequestion(qid=${Questions.questionId})}">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

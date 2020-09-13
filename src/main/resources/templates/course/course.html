@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>CSCI5308 - Group Formation Tool</title>
+</head>
+<body>
+	<div sec:authorize="isAuthenticated()">
+		<h4 th:inline="text">BannerID:
+			[[${#httpServletRequest.remoteUser}]]</h4>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" />
+		</form>
+
+		<h1 th:text="'Course: ' + ${course.title}">Course: Title Not
+			Found</h1>
+		<div th:if="${instructor} or ${ta}">
+			<br /> <a th:href="@{/course/instructoradmin(id=${course.id})}">Course
+				Administration</a> <a
+				th:href="@{/editcoursesurvey/editcoursesurvey(id=${course.id})}">Edit
+				Course Survey</a>
+		</div>
+		<div th:if="${instructor}">
+			<br /> <a
+				th:href="@{/questionmanager/questionmanager(id=${course.id})}">Go
+				to Question Manager page</a>
+
+		</div>
+	</div>
+	<div sec:authorize="!isAuthenticated()">
+		<p>This site requires you to be logged in.</p>
+		<a th:href="@{/login}">Click here to log in!</a>
+	</div>
+</body>
+</html>
